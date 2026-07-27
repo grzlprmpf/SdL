@@ -359,6 +359,37 @@
       box-shadow:0 2px 7px rgba(58,61,51,.18);
     }
 
+    .reflection-note{
+      display:block;
+      width:100%;
+      min-height:68px;
+      margin:8px 0 0;
+      padding:10px 12px;
+      resize:vertical;
+      border:1px solid #d8d3c7;
+      border-radius:8px;
+      outline:none;
+      background:rgba(251,249,243,.72);
+      color:var(--ink-soft);
+      font:13px/1.5 var(--sans);
+      transition:border-color .15s ease,background-color .15s ease,box-shadow .15s ease;
+    }
+
+    .reflection-note::placeholder{
+      color:#989a91;
+      opacity:1;
+    }
+
+    .reflection-note:hover{
+      border-color:#c4c2b7;
+    }
+
+    .reflection-note:focus{
+      border-color:var(--accent);
+      background:#fbf9f3;
+      box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 14%,transparent);
+    }
+
     .distribution-label{
       display:flex;
       justify-content:space-between;
@@ -809,8 +840,8 @@
 
     const defaultValues = [50, 50, 50, 50, 50];
     const defaultProfiles = [
-      { name: "Ich", values: [...defaultValues] },
-      { name: "Partner*in", values: [...defaultValues] }
+      { name: "Ich", values: [...defaultValues], notes: ["", "", "", "", ""] },
+      { name: "Partner*in", values: [...defaultValues], notes: ["", "", "", "", ""] }
     ];
 
     const storageKey = "love-languages-anonymous-v3";
@@ -818,7 +849,8 @@
     function freshDefaults() {
       return defaultProfiles.map(profile => ({
         name: profile.name,
-        values: [...profile.values]
+        values: [...profile.values],
+        notes: [...profile.notes]
       }));
     }
 
@@ -829,7 +861,12 @@
           Array.isArray(parsed) &&
           parsed.length === 2 &&
           parsed.every(p => typeof p.name === "string" && Array.isArray(p.values) && p.values.length === 5)
-        ) return parsed;
+        ) return parsed.map(profile => ({
+          ...profile,
+          notes: Array.isArray(profile.notes) && profile.notes.length === 5
+            ? profile.notes.map(note => typeof note === "string" ? note : "")
+            : ["", "", "", "", ""]
+        }));
       } catch (_) {}
       return freshDefaults();
     }
@@ -922,6 +959,15 @@
             style="--accent:var(--${["moss","sand","rose","olive","clay"][index]})"
             aria-label="${language.name}: Stärke"
           />
+
+          <textarea
+            class="reflection-note"
+            data-note-index="${index}"
+            style="--accent:var(--${["moss","sand","rose","olive","clay"][index]})"
+            maxlength="600"
+            aria-label="${language.name}: Beispiele und Situationen"
+            placeholder="Beispiele oder Situationen, an denen du das festmachst …"
+          >${escapeHtml(profile.notes[index])}</textarea>
         `;
 
         controls.appendChild(item);
@@ -939,6 +985,11 @@
         item.querySelector('input[type="range"]').addEventListener("input", event => {
           state[profileIndex].values[index] = Number(event.target.value);
           renderCard(card, profileIndex);
+          saveState();
+        });
+
+        item.querySelector(".reflection-note").addEventListener("input", event => {
+          state[profileIndex].notes[index] = event.target.value;
           saveState();
         });
       });
