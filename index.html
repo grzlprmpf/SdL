@@ -1,0 +1,999 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Interaktives Tool zur explorativen Gewichtung der fünf Sprachen der Liebe." />
+  <title>Sprachen der Liebe – interaktives Tool</title>
+<style>
+    :root{
+      color-scheme: light;
+      --paper:#f7f3e9;
+      --paper-deep:#efe9dc;
+      --card:#fbf9f3;
+      --ink:#34372f;
+      --ink-soft:#5f655a;
+      --muted:#85897e;
+      --line:#d9d4c7;
+      --sage:#78836d;
+      --sage-dark:#5f6957;
+      --sage-soft:#e4e8dc;
+      --olive:#9a946d;
+      --clay:#b78269;
+      --sand:#c6aa77;
+      --moss:#71836f;
+      --rose:#7898a6;
+      --shadow:0 18px 50px rgba(77,72,57,.07);
+      --serif:"Iowan Old Style","Palatino Linotype","Book Antiqua",Palatino,Georgia,serif;
+      --sans:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    }
+
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+
+    body{
+      margin:0;
+      color:var(--ink);
+      background:
+        radial-gradient(circle at 8% 4%,rgba(120,131,109,.10),transparent 24rem),
+        radial-gradient(circle at 92% 24%,rgba(183,130,105,.07),transparent 28rem),
+        var(--paper);
+      font-family:var(--sans);
+    }
+
+    body::before{
+      content:"";
+      position:fixed;
+      inset:0;
+      pointer-events:none;
+      opacity:.22;
+      background-image:
+        linear-gradient(rgba(90,85,68,.025) 1px,transparent 1px),
+        linear-gradient(90deg,rgba(90,85,68,.018) 1px,transparent 1px);
+      background-size:28px 28px;
+      mask-image:linear-gradient(to bottom,black,transparent 68%);
+    }
+
+    a{
+      color:var(--sage-dark);
+      text-underline-offset:3px;
+      text-decoration-thickness:1px;
+    }
+
+    a:hover{color:var(--clay)}
+
+    .page{
+      width:min(1160px,calc(100% - 34px));
+      margin:0 auto;
+      padding:42px 0 84px;
+    }
+
+    .hero{
+      position:relative;
+      overflow:hidden;
+      margin-bottom:34px;
+      padding:42px clamp(24px,5vw,58px) 44px;
+      border:1px solid var(--line);
+      border-radius:6px 42px 6px 42px;
+      background:rgba(251,249,243,.78);
+    }
+
+    .hero::after{
+      content:"";
+      position:absolute;
+      width:240px;
+      height:240px;
+      right:-72px;
+      top:-86px;
+      border-radius:48% 52% 62% 38% / 44% 40% 60% 56%;
+      background:var(--sage-soft);
+      opacity:.82;
+      transform:rotate(12deg);
+    }
+
+    .hero-kicker{
+      position:relative;
+      z-index:1;
+      margin:0 0 17px;
+      color:var(--sage-dark);
+      font-size:11px;
+      font-weight:750;
+      letter-spacing:.18em;
+      text-transform:uppercase;
+    }
+
+    h1{
+      position:relative;
+      z-index:1;
+      max-width:760px;
+      margin:0 0 18px;
+      font-family:var(--serif);
+      font-size:clamp(46px,7vw,78px);
+      font-weight:400;
+      line-height:.98;
+      letter-spacing:-.045em;
+    }
+
+    .intro{
+      position:relative;
+      z-index:1;
+      max-width:720px;
+      margin:0;
+      color:var(--ink-soft);
+      font-family:var(--serif);
+      font-size:clamp(17px,2vw,20px);
+      line-height:1.55;
+    }
+
+    .tool-label{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      margin:0 0 14px;
+      color:var(--sage-dark);
+      font-size:11px;
+      font-weight:780;
+      letter-spacing:.15em;
+      text-transform:uppercase;
+    }
+
+    .tool-label::after{
+      content:"";
+      height:1px;
+      flex:1;
+      background:var(--line);
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:18px;
+    }
+
+    @media(max-width:860px){
+      .grid{grid-template-columns:1fr}
+    }
+
+    .card{
+      position:relative;
+      padding:28px 27px 25px;
+      border:1px solid var(--line);
+      border-radius:18px;
+      background:rgba(251,249,243,.94);
+      box-shadow:var(--shadow);
+    }
+
+    .card::before{
+      content:"";
+      position:absolute;
+      left:0;
+      top:28px;
+      bottom:28px;
+      width:3px;
+      border-radius:0 4px 4px 0;
+      background:var(--sage);
+      opacity:.72;
+    }
+
+    .profile-meta{
+      margin:0 0 6px;
+      color:var(--muted);
+      font-size:10px;
+      font-weight:760;
+      letter-spacing:.15em;
+      text-transform:uppercase;
+    }
+
+    .person-line{
+      min-width:0;
+      margin:0 0 27px;
+    }
+
+    .person-name{
+      width:100%;
+      min-height:43px;
+      margin:0;
+      padding:2px 8px 5px 0;
+      border:0;
+      border-bottom:1px solid transparent;
+      outline:none;
+      background:transparent;
+      color:var(--ink);
+      font-family:var(--serif);
+      font-size:30px;
+      font-weight:400;
+      line-height:1.1;
+      letter-spacing:-.025em;
+      transition:border-color .15s ease,background-color .15s ease;
+    }
+
+    .person-name::after{
+      content:" (editierbar)";
+      color:var(--muted);
+      font-family:var(--sans);
+      font-size:11px;
+      font-weight:400;
+      letter-spacing:0;
+      white-space:nowrap;
+    }
+
+    .person-name:hover{
+      border-bottom-color:#c8c3b5;
+    }
+
+    .person-name:focus{
+      border-bottom-color:var(--sage);
+      background-color:rgba(228,232,220,.35);
+    }
+
+    .language{
+      padding:0 0 19px;
+      margin:0 0 19px;
+      border-bottom:1px solid #e0dbcf;
+    }
+
+    .language:last-of-type{margin-bottom:17px}
+
+    .language-head{
+      display:grid;
+      grid-template-columns:minmax(0,1fr) auto auto;
+      gap:10px;
+      align-items:center;
+      margin-bottom:10px;
+    }
+
+    .language-button{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      min-width:0;
+      padding:0;
+      border:0;
+      background:transparent;
+      color:var(--ink);
+      text-align:left;
+      font-family:var(--serif);
+      font-size:17px;
+      font-weight:400;
+      cursor:pointer;
+    }
+
+    .language-button:hover{color:var(--sage-dark)}
+
+    .chevron{
+      display:inline-grid;
+      place-items:center;
+      width:19px;
+      height:19px;
+      flex:0 0 auto;
+      border:1px solid #cbc6b8;
+      border-radius:50%;
+      color:var(--sage-dark);
+      font-family:var(--sans);
+      font-size:12px;
+      line-height:1;
+      transition:transform .16s ease,background .16s ease;
+    }
+
+    .language.open .chevron{
+      transform:rotate(90deg);
+      background:var(--sage-soft);
+    }
+
+    .raw{
+      min-width:60px;
+      text-align:right;
+      color:var(--muted);
+      font-size:11px;
+      font-variant-numeric:tabular-nums;
+    }
+
+    .share{
+      min-width:59px;
+      text-align:right;
+      color:var(--sage-dark);
+      font-family:var(--serif);
+      font-size:17px;
+      font-weight:600;
+      font-variant-numeric:tabular-nums;
+    }
+
+    .description{
+      display:none;
+      margin:0 0 12px 27px;
+      padding:11px 14px 12px;
+      border-left:2px solid #b9c1ad;
+      background:#f0f1e9;
+      color:var(--ink-soft);
+      font-family:var(--serif);
+      font-size:14px;
+      line-height:1.55;
+    }
+
+    .language.open .description{display:block}
+
+    input[type="range"]{
+      --value:50%;
+      --accent:var(--sage);
+      width:100%;
+      height:28px;
+      margin:0;
+      appearance:none;
+      -webkit-appearance:none;
+      background:transparent;
+      cursor:ew-resize;
+    }
+
+    input[type="range"]::-webkit-slider-runnable-track{
+      height:7px;
+      border-radius:999px;
+      background:
+        linear-gradient(90deg,var(--accent) 0 var(--value),#ded9cd var(--value) 100%);
+    }
+
+    input[type="range"]::-moz-range-track{
+      height:7px;
+      border-radius:999px;
+      background:
+        linear-gradient(90deg,var(--accent) 0 var(--value),#ded9cd var(--value) 100%);
+    }
+
+    input[type="range"]::-webkit-slider-thumb{
+      appearance:none;
+      -webkit-appearance:none;
+      width:21px;
+      height:21px;
+      margin-top:-7px;
+      border-radius:50%;
+      background:#fbf9f3;
+      border:3px solid var(--accent);
+      box-shadow:0 2px 7px rgba(58,61,51,.18);
+    }
+
+    input[type="range"]::-moz-range-thumb{
+      width:15px;
+      height:15px;
+      border-radius:50%;
+      background:#fbf9f3;
+      border:3px solid var(--accent);
+      box-shadow:0 2px 7px rgba(58,61,51,.18);
+    }
+
+    .distribution-label{
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      margin:2px 0 9px;
+      color:var(--muted);
+      font-size:11px;
+      letter-spacing:.02em;
+    }
+
+    .distribution-label strong{
+      color:var(--ink-soft);
+      font-weight:650;
+    }
+
+    .distribution{
+      position:relative;
+      display:flex;
+      height:13px;
+      overflow:hidden;
+      border-radius:999px;
+      background:#ded9cd;
+      outline:1px solid rgba(121,118,104,.08);
+      outline-offset:-1px;
+    }
+
+    .distribution::after{
+      content:"";
+      position:absolute;
+      inset:0;
+      pointer-events:none;
+      background:
+        linear-gradient(90deg,
+          transparent calc(20% - 1px),rgba(250,248,241,.8) calc(20% - 1px),rgba(250,248,241,.8) 20%,transparent 20%,
+          transparent calc(40% - 1px),rgba(250,248,241,.8) calc(40% - 1px),rgba(250,248,241,.8) 40%,transparent 40%,
+          transparent calc(60% - 1px),rgba(250,248,241,.8) calc(60% - 1px),rgba(250,248,241,.8) 60%,transparent 60%,
+          transparent calc(80% - 1px),rgba(250,248,241,.8) calc(80% - 1px),rgba(250,248,241,.8) 80%,transparent 80%);
+      opacity:.7;
+    }
+
+    .segment{height:100%;transition:width .12s ease}
+    .segment:nth-child(1){background:var(--moss)}
+    .segment:nth-child(2){background:var(--sand)}
+    .segment:nth-child(3){background:var(--rose)}
+    .segment:nth-child(4){background:var(--olive)}
+    .segment:nth-child(5){background:var(--clay)}
+
+    .actions{
+      display:flex;
+      justify-content:flex-end;
+      margin-top:16px;
+    }
+
+    .reset{
+      padding:8px 0 4px;
+      border:0;
+      border-bottom:1px solid #aaa697;
+      background:transparent;
+      color:var(--ink-soft);
+      font:inherit;
+      font-size:11px;
+      font-weight:650;
+      cursor:pointer;
+    }
+
+    .reset:hover{
+      color:var(--sage-dark);
+      border-bottom-color:var(--sage-dark);
+    }
+
+    .explainer{
+      max-width:850px;
+      margin:24px auto 0;
+      color:var(--ink-soft);
+      font-family:var(--serif);
+      font-size:14px;
+      line-height:1.65;
+      text-align:center;
+    }
+
+    .article{
+      max-width:980px;
+      margin:64px auto 0;
+      padding:clamp(30px,6vw,66px);
+      border:1px solid var(--line);
+      border-radius:4px 38px 4px 38px;
+      background:#fbf9f3;
+      box-shadow:0 22px 70px rgba(79,73,57,.06);
+    }
+
+    .article::before{
+      content:"";
+      display:block;
+      width:56px;
+      height:4px;
+      margin-bottom:28px;
+      border-radius:999px;
+      background:var(--sage);
+    }
+
+    .article-kicker{
+      margin:0 0 12px;
+      color:var(--sage-dark);
+      font-size:10px;
+      font-weight:780;
+      text-transform:uppercase;
+      letter-spacing:.18em;
+    }
+
+    .article h2{
+      max-width:760px;
+      margin:0 0 24px;
+      font-family:var(--serif);
+      font-size:clamp(34px,5vw,54px);
+      font-weight:400;
+      line-height:1.04;
+      letter-spacing:-.04em;
+    }
+
+    .article h3{
+      margin:38px 0 12px;
+      color:var(--ink);
+      font-family:var(--serif);
+      font-size:24px;
+      font-weight:400;
+      line-height:1.2;
+      letter-spacing:-.02em;
+    }
+
+    .article p,
+    .article li{
+      color:var(--ink-soft);
+      font-family:var(--serif);
+      font-size:16px;
+      line-height:1.78;
+    }
+
+    .article .lead{
+      max-width:790px;
+      color:var(--ink);
+      font-size:19px;
+      line-height:1.7;
+    }
+
+    .article strong{
+      color:var(--ink);
+      font-weight:650;
+    }
+
+    .callout{
+      margin:30px 0;
+      padding:22px 24px;
+      border:0;
+      border-left:3px solid var(--sage);
+      border-radius:0;
+      background:#ecefe6;
+      color:var(--ink);
+      font-family:var(--serif);
+      font-size:17px;
+      line-height:1.7;
+    }
+
+    .sources{
+      margin-top:42px;
+      padding-top:28px;
+      border-top:1px solid var(--line);
+    }
+
+    .sources ol{
+      padding-left:22px;
+      margin-bottom:0;
+    }
+
+    .sources li{
+      margin-bottom:12px;
+      font-family:var(--sans);
+      font-size:12px;
+      line-height:1.65;
+    }
+
+    .fineprint{
+      margin-top:30px;
+      padding-top:18px;
+      border-top:1px solid #e2ddd1;
+      color:var(--muted);
+      font-family:var(--sans)!important;
+      font-size:11px!important;
+      line-height:1.6!important;
+    }
+
+    @media(max-width:600px){
+      .page{width:min(100% - 22px,1160px);padding-top:18px}
+      .hero{padding:30px 22px 32px;border-radius:4px 28px 4px 28px}
+      .hero::after{width:170px;height:170px;right:-70px;top:-60px}
+      .card{padding:24px 20px 22px}
+      .language-head{grid-template-columns:minmax(0,1fr) auto}
+      .raw{display:none}
+      .person-name{width:100%;font-size:28px}
+      .person-name::after{font-size:10px}
+      .article{padding:30px 22px;border-radius:4px 28px 4px 28px}
+    }
+  </style>
+</head>
+
+<body>
+  <main class="page">
+    <header class="hero">
+      <p class="hero-kicker">Reflexion · Beziehung · Nähe</p>
+      <h1>Sprachen der Liebe</h1>
+      <p class="intro">
+        Was lässt dich Liebe besonders deutlich spüren – und was ist deinem Gegenüber wichtig?
+        Gewichtet eure Formen von Nähe und Zuwendung unabhängig voneinander und entdeckt auf einen Blick,
+        wo ihr euch ähnlich seid, wo Unterschiede liegen und worüber sich ein Gespräch lohnen könnte.
+      </p>
+    </header>
+
+    <div class="tool-label">Persönliche Gewichtung</div>
+    <section class="grid" id="profiles"></section>
+
+    <p class="explainer">
+      Beispiel: 50 / 50 / 50 / 50 / 50 ergibt fünfmal 20 %. Auch 90 / 90 / 90 / 90 / 90 ergibt fünfmal 20 %.
+      Bei 50 / 0 / 0 / 0 / 0 erhält die erste Sprache 100 %. Die Berechnung lautet:
+      <strong>eigener Reglerwert ÷ Summe aller Reglerwerte × 100</strong>.
+    </p>
+
+    <article class="article">
+      <p class="article-kicker">Hintergrund</p>
+      <h2>Was steckt hinter den „fünf Sprachen der Liebe“?</h2>
+
+      <p class="lead">
+        Die „Five Love Languages“ sind ein populäres Beziehungsmodell des US-amerikanischen Autors und
+        Eheberaters Gary Chapman. Es kann als Gesprächshilfe nützlich sein, sollte aber nicht mit einem
+        wissenschaftlich validierten Persönlichkeitstest oder einer diagnostischen Typologie verwechselt werden.
+      </p>
+
+      <h3>Woher kommt das Modell?</h3>
+      <p>
+        Gary Chapman veröffentlichte <em>The Five Love Languages: How to Express Heartfelt Commitment to Your Mate</em>
+        1992 bei Northfield Publishing. Er leitete die Kategorien nach eigener Darstellung aus seiner langjährigen
+        Arbeit in der Eheberatung ab. Das ursprüngliche Modell war vor allem für verheiratete Paare gedacht und
+        wurde später auf Singles, Familien, Kinder, Jugendliche und weitere Beziehungskontexte übertragen.
+      </p>
+
+      <h3>Welche fünf „Sprachen“ gibt es?</h3>
+      <p>
+        Chapman unterscheidet <strong>Worte der Anerkennung</strong>, <strong>Zweisamkeit</strong>,
+        <strong>Geschenke</strong>, <strong>Hilfsbereitschaft</strong> und <strong>körperliche Berührung</strong>.
+        Die Grundidee lautet: Menschen unterscheiden sich darin, durch welche Formen von Zuwendung sie sich
+        besonders geliebt fühlen und wie sie selbst Zuneigung ausdrücken.
+      </p>
+
+      <p>
+        Chapman formulierte darüber hinaus die einprägsame These, Menschen hätten typischerweise eine bevorzugte
+        oder „primäre“ Liebessprache und Beziehungen könnten profitieren, wenn Partnerinnen und Partner diese
+        bevorzugten Ausdrucksformen erkennen und gezielt bedienen.
+      </p>
+
+      <h3>Wie verbreitet ist das Modell?</h3>
+      <p>
+        Außerordentlich verbreitet. Der Verlag Moody Publishers gibt für die Buchreihe inzwischen
+        <strong>mehr als 20 Millionen verkaufte Exemplare</strong> an; das Hauptwerk war laut Verlag über Jahre
+        ein Bestseller. Der Begriff „love language“ ist weit über das ursprüngliche Buch hinaus in
+        Alltagssprache, Social Media, Dating und teilweise auch in Paarberatung und Therapie eingegangen.
+      </p>
+
+      <h3>Was sagt ein Ergebnis in diesem Tool aus?</h3>
+      <p>
+        Dieses Tool misst keine objektive Eigenschaft. Es bildet lediglich deine <strong>momentane subjektive
+        Gewichtung</strong> der fünf Kategorien ab. Ein Wert von beispielsweise 40 % für körperliche Berührung
+        bedeutet hier: Im Verhältnis zu den anderen vier ausgewählten Kategorien bekommt körperliche Berührung
+        in deiner aktuellen Einschätzung einen Anteil von 40 %.
+      </p>
+
+      <p>
+        Das ist absichtlich etwas anderes als Chapmans klassische Vorstellung einer einzigen „primären“
+        Liebessprache. Die Darstellung als Verteilung erlaubt Mischprofile und macht sichtbar, dass mehrere
+        Formen von Zuwendung gleichzeitig wichtig sein können.
+      </p>
+
+      <div class="callout">
+        Ein Profil von 35 % Zweisamkeit und 30 % körperlicher Berührung bedeutet nicht, dass eine Person
+        wissenschaftlich nachweisbar „zu 35 % Quality Time“ ist. Es ist eher eine strukturierte Momentaufnahme:
+        <strong>Welche Formen von Zuwendung erscheinen mir im Verhältnis zueinander gerade besonders wichtig?</strong>
+      </div>
+
+      <h3>Wie gut ist das wissenschaftlich belegt?</h3>
+      <p>
+        Die Forschungslage ist gemischt, insgesamt aber deutlich skeptischer als die Popularität des Modells
+        vermuten lässt. Eine Übersichtsarbeit von Emily Impett, Haeyoung Gideon Park und Amy Muise aus dem Jahr
+        2024 kommt zu dem Schluss, dass die vorhandenen Studien die drei zentralen Annahmen des Modells
+        <strong>nicht überzeugend stützen</strong>: dass jeder Mensch eine primäre Liebessprache hat, dass es
+        genau fünf relevante Kategorien gibt und dass Beziehungen speziell dann zufriedener sind, wenn die
+        Partner die jeweils primäre Sprache treffen.
+      </p>
+
+      <p>
+        Einzelne Studien zeigen dennoch Zusammenhänge, die zur intuitiven Attraktivität des Modells passen.
+        Eine Untersuchung mit 100 heterosexuellen Paaren aus dem Jahr 2022 fand beispielsweise höhere
+        Beziehungs- und sexuelle Zufriedenheit, wenn die gezeigte Zuneigung stärker zu den Präferenzen des
+        Gegenübers passte. Eine dyadische Studie von 2023 fand außerdem, dass ein genaueres Verständnis der
+        Präferenzen des Partners mit höherer Beziehungszufriedenheit zusammenhing.
+      </p>
+
+      <p>
+        Neuere, größere Untersuchungen relativieren aber gerade die starke Idee der „primären Sprache“.
+        Eine Studie mit 696 Personen, veröffentlicht 2025, fand keinen besonderen Vorteil dafür, ausgerechnet
+        die jeweils erstplatzierte Liebessprache zu bedienen. Eine weitere präregistrierte Studie mit 499
+        Personen kam zu dem Ergebnis, dass weniger als die Hälfte überhaupt klar einer einzelnen primären
+        Liebessprache zugeordnet werden konnte und dass Zufriedenheit über <strong>mehrere verschiedene Formen
+        liebevollen Verhaltens</strong> stärker mit Beziehungsqualität zusammenhing.
+      </p>
+
+      <h3>Gibt es wirklich genau fünf?</h3>
+      <p>
+        Dafür gibt es keine starke empirische Grundlage. Eine 2025 publizierte Untersuchung versuchte,
+        liebevolles Verhalten datengetrieben statt anhand der fünf vorgegebenen Kategorien zu strukturieren.
+        Modelle mit ungefähr <strong>sieben bis zehn Dimensionen</strong> passten in diesen Analysen besser als
+        die klassische Fünferstruktur. Das spricht dafür, dass Chapmans Kategorien eher eine eingängige
+        Vereinfachung als eine natürliche psychologische Taxonomie sind.
+      </p>
+
+      <h3>Was ist die wichtigste Kritik?</h3>
+      <p>
+        Die zentrale Kritik betrifft die <strong>Typisierung</strong>. Bedürfnisse nach Nähe, Aufmerksamkeit,
+        Unterstützung oder Berührung sind wahrscheinlich kontextabhängiger und flexibler, als eine feste
+        Hauptsprache vermuten lässt. Was heute besonders wichtig ist, kann sich mit Lebensphase, Stress,
+        Elternschaft, Konflikten, Krankheit oder der konkreten Beziehung verändern.
+      </p>
+
+      <p>
+        Zudem decken die fünf Kategorien nicht alle relevanten Formen von Beziehungspflege ab. Neuere Forschung
+        nennt beispielsweise emotionale Unterstützung in schwierigen Situationen, Ermutigung zu persönlichen
+        Zielen und Verlässlichkeit beziehungsweise Verantwortungsübernahme als eigenständige wichtige Verhaltensweisen.
+      </p>
+
+      <p>
+        Ein weiterer Einwand ist, dass das Modell Probleme vereinfachen kann, die eigentlich mit Konfliktmustern,
+        Bindung, Sicherheit, Macht, Grenzen oder Kommunikation zu tun haben. „Du sprichst meine Liebessprache
+        nicht“ ist daher keine ausreichende Erklärung für größere Beziehungsprobleme.
+      </p>
+
+      <h3>Ist das Modell also nutzlos?</h3>
+      <p>
+        Nein. Man muss zwischen einer <strong>wissenschaftlich bestätigten Theorie</strong> und einem
+        <strong>praktischen Gesprächsrahmen</strong> unterscheiden. Gerade als niedrigschwellige Frage
+        „Wodurch fühlst du dich eigentlich besonders gesehen und geliebt?“ kann das Modell produktiv sein.
+        Es schafft Begriffe für Bedürfnisse, über die Paare sonst möglicherweise nur unspezifisch sprechen.
+      </p>
+
+      <p>
+        Die aktuelle Beziehungsforschung passt allerdings eher zu einer flexibleren Interpretation:
+        Menschen brauchen gewöhnlich nicht nur eine einzige Art von Zuwendung. Gute Beziehungen profitieren
+        davon, wenn Partner unterschiedliche Bedürfnisse wahrnehmen, darüber sprechen und auf mehrere Arten
+        responsiv reagieren.
+      </p>
+
+      <div class="callout">
+        Sinnvoll verwendet ist das Modell daher eher eine <strong>Landkarte für ein Gespräch</strong> als ein
+        Test, der herausfindet, „welcher Typ Mensch“ jemand ist.
+      </div>
+
+      <section class="sources">
+        <h3>Quellen und weiterführende Literatur</h3>
+        <ol>
+          <li>
+            WorldCat: Gary D. Chapman, <em>The Five Love Languages</em>, Northfield Publishing, 1992.
+            <a href="https://search.worldcat.org/title/The-five-love-languages/oclc/26939980" target="_blank" rel="noopener noreferrer">Bibliografischer Eintrag</a>
+          </li>
+          <li>
+            Moody Publishers: Angaben zur aktuellen Ausgabe und zu mehr als 20 Millionen verkauften Exemplaren.
+            <a href="https://www.moodypublishers.com/the-5-love-languagesreg?variationCode=978-0-8024-3846-1" target="_blank" rel="noopener noreferrer">Verlagsseite</a>
+          </li>
+          <li>
+            Impett, E. A., Park, H. G. & Muise, A. (2024):
+            <em>Popular Psychology Through a Scientific Lens: Evaluating Love Languages From a Relationship Science Perspective.</em>
+            Current Directions in Psychological Science, 33(2).
+            <a href="https://www.psychologicalscience.org/journals/current-directions/09637214231217663/" target="_blank" rel="noopener noreferrer">Übersichtsarbeit</a>
+          </li>
+          <li>
+            Pett, R. C., Lozano, P. A. & Varga, S. (2022):
+            <em>Revisiting the Languages of Love: An Empirical Test of the Validity Assumptions Underlying Chapman’s Five Love Languages Typology.</em>
+            Communication Reports, 36(1), 54–67.
+            <a href="https://www.tandfonline.com/doi/abs/10.1080/08934215.2022.2113549" target="_blank" rel="noopener noreferrer">Studie</a>
+          </li>
+          <li>
+            Mostova, O., Stolarski, M. & Matthews, G. (2022):
+            <em>I love the way you love me: Responding to partner's love language preferences boosts satisfaction in romantic heterosexual couples.</em>
+            PLOS ONE.
+            <a href="https://pubmed.ncbi.nlm.nih.gov/35731784/" target="_blank" rel="noopener noreferrer">PubMed</a>
+          </li>
+          <li>
+            Coy, A. E. & Rodriguez, L. M. (2023):
+            <em>Affection preference, enactment, and relationship satisfaction: A dyadic analysis of love languages.</em>
+            Journal of Marital and Family Therapy, 49(4), 741–761.
+            <a href="https://pubmed.ncbi.nlm.nih.gov/37431256/" target="_blank" rel="noopener noreferrer">PubMed</a>
+          </li>
+          <li>
+            Flicker, S. M. & Sancier-Barbosa, F. (2025):
+            <em>Testing the predictions of Chapman's five love languages theory.</em>
+            Journal of Marital and Family Therapy, 51(1).
+            <a href="https://pubmed.ncbi.nlm.nih.gov/39420529/" target="_blank" rel="noopener noreferrer">PubMed</a>
+          </li>
+          <li>
+            Flicker, S. M., Sancier-Barbosa, F. & Impett, E. A. (2025):
+            <em>Revisiting the Five Love Languages Framework: Toward a More Flexible Model of Love Expression.</em>
+            Journal of Marital and Family Therapy, 51(4).
+            <a href="https://pubmed.ncbi.nlm.nih.gov/40977357/" target="_blank" rel="noopener noreferrer">PubMed</a>
+          </li>
+          <li>
+            Flicker, S. M. et al. (2025):
+            <em>How Many Love Languages Are There? Examining Chapman's Five Love Languages Using a Bottom-Up Approach.</em>
+            Journal of Marital and Family Therapy, 51(4).
+            <a href="https://pubmed.ncbi.nlm.nih.gov/40916580/" target="_blank" rel="noopener noreferrer">PubMed</a>
+          </li>
+        </ol>
+      </section>
+
+      <p class="fineprint">
+        Dieses Tool ist für Reflexion und Gespräch gedacht. Es ist kein psychologischer Test und ersetzt keine
+        Paarberatung, Psychotherapie oder klinische Diagnostik.
+      </p>
+    </article>
+  </main>
+
+  <script>
+    const languages = [
+      {
+        name: "Worte der Anerkennung",
+        description: "Zuneigung wird besonders durch wertschätzende Sprache erlebt: ehrliche Komplimente, Dank, Ermutigung, Anerkennung oder ausdrücklich ausgesprochene Zuneigung."
+      },
+      {
+        name: "Zweisamkeit / Quality Time",
+        description: "Im Mittelpunkt steht bewusst geteilte Zeit mit echter Aufmerksamkeit: Gespräche, gemeinsame Aktivitäten oder einfach ungestörtes Zusammensein, bei dem die andere Person präsent ist."
+      },
+      {
+        name: "Geschenke",
+        description: "Geschenke funktionieren hier vor allem als sichtbares Zeichen: Jemand hat an mich gedacht. Entscheidend ist weniger der materielle Wert als Aufmerksamkeit, Symbolik und persönliche Bedeutung."
+      },
+      {
+        name: "Hilfsbereitschaft / Acts of Service",
+        description: "Liebe wird besonders durch konkrete Unterstützung wahrgenommen: Aufgaben abnehmen, Verantwortung übernehmen, etwas organisieren oder im Alltag verlässlich entlasten."
+      },
+      {
+        name: "Körperliche Berührung",
+        description: "Nähe wird stark über Berührung vermittelt, zum Beispiel Umarmungen, Kuscheln, Händchenhalten, Küsse oder Sexualität. Welche Formen angenehm sind, hängt immer von Person, Situation und Einvernehmen ab."
+      }
+    ];
+
+    const defaultValues = [50, 50, 50, 50, 50];
+    const defaultProfiles = [
+      { name: "Ich", values: [...defaultValues] },
+      { name: "Partner*in", values: [...defaultValues] }
+    ];
+
+    const storageKey = "love-languages-anonymous-v3";
+
+    function freshDefaults() {
+      return defaultProfiles.map(profile => ({
+        name: profile.name,
+        values: [...profile.values]
+      }));
+    }
+
+    function loadState() {
+      try {
+        const parsed = JSON.parse(localStorage.getItem(storageKey));
+        if (
+          Array.isArray(parsed) &&
+          parsed.length === 2 &&
+          parsed.every(p => typeof p.name === "string" && Array.isArray(p.values) && p.values.length === 5)
+        ) return parsed;
+      } catch (_) {}
+      return freshDefaults();
+    }
+
+    let state = loadState();
+
+    function saveState() {
+      localStorage.setItem(storageKey, JSON.stringify(state));
+    }
+
+    function sharesFrom(values) {
+      const sum = values.reduce((a,b) => a+b, 0);
+      if (sum === 0) return [20,20,20,20,20];
+
+      const raw = values.map(v => v / sum * 100);
+      const rounded = raw.map(v => Math.round(v * 10) / 10);
+      const current = rounded.reduce((a,b) => a+b, 0);
+      const diff = Math.round((100 - current) * 10) / 10;
+
+      if (Math.abs(diff) >= 0.05) {
+        const maxIndex = raw.indexOf(Math.max(...raw));
+        rounded[maxIndex] = Math.round((rounded[maxIndex] + diff) * 10) / 10;
+      }
+      return rounded;
+    }
+
+    function formatPercent(value) {
+      return Number.isInteger(value)
+        ? value + " %"
+        : value.toFixed(1).replace(".", ",") + " %";
+    }
+
+    function makeProfile(profileIndex) {
+      const profile = state[profileIndex];
+      const card = document.createElement("article");
+      card.className = "card";
+      card.dataset.profile = profileIndex;
+
+      card.innerHTML = `
+        <div class="person-line">
+          <div
+            class="person-name"
+            contenteditable="plaintext-only"
+            role="textbox"
+            aria-label="Name der Person"
+            title="Name bearbeiten"
+            spellcheck="false"
+          >${escapeHtml(profile.name)}</div>
+        </div>
+
+        <div class="controls"></div>
+
+        <div class="distribution-label">
+          <span>Relative Verteilung</span>
+          <strong>Summe: 100 %</strong>
+        </div>
+        <div class="distribution" aria-label="Relative Verteilung"></div>
+
+        <div class="actions">
+          <button type="button" class="reset">Auf 50 zurücksetzen</button>
+        </div>
+      `;
+
+      const controls = card.querySelector(".controls");
+      const distribution = card.querySelector(".distribution");
+
+      languages.forEach((language, index) => {
+        const item = document.createElement("section");
+        item.className = "language";
+
+        item.innerHTML = `
+          <div class="language-head">
+            <button class="language-button" type="button" aria-expanded="false">
+              <span class="chevron">›</span>
+              <span>${language.name}</span>
+            </button>
+            <span class="raw">Stärke <span class="raw-value">50</span></span>
+            <span class="share"><span class="share-value">20 %</span></span>
+          </div>
+
+          <p class="description">${language.description}</p>
+
+          <input
+            type="range"
+            min="0"
+            max="100"
+            step="1"
+            value="50"
+            data-index="${index}"
+            style="--accent:var(--${["moss","sand","rose","olive","clay"][index]})"
+            aria-label="${language.name}: Stärke"
+          />
+        `;
+
+        controls.appendChild(item);
+
+        const segment = document.createElement("div");
+        segment.className = "segment";
+        distribution.appendChild(segment);
+
+        const toggle = item.querySelector(".language-button");
+        toggle.addEventListener("click", () => {
+          const open = item.classList.toggle("open");
+          toggle.setAttribute("aria-expanded", String(open));
+        });
+
+        item.querySelector('input[type="range"]').addEventListener("input", event => {
+          state[profileIndex].values[index] = Number(event.target.value);
+          renderCard(card, profileIndex);
+          saveState();
+        });
+      });
+
+      card.querySelector(".person-name").addEventListener("input", event => {
+        state[profileIndex].name = event.target.textContent.slice(0, 40);
+        saveState();
+      });
+
+      card.querySelector(".person-name").addEventListener("keydown", event => {
+        if (event.key === "Enter") {
+          event.preventDefault();
+          event.currentTarget.blur();
+        }
+      });
+
+      card.querySelector(".reset").addEventListener("click", () => {
+        state[profileIndex].values = [...defaultValues];
+        renderCard(card, profileIndex);
+        saveState();
+      });
+
+      renderCard(card, profileIndex);
+      return card;
+    }
+
+    function renderCard(card, profileIndex) {
+      const values = state[profileIndex].values;
+      const shares = sharesFrom(values);
+
+      const sliders = card.querySelectorAll('input[type="range"]');
+      const rawValues = card.querySelectorAll(".raw-value");
+      const shareValues = card.querySelectorAll(".share-value");
+      const segments = card.querySelectorAll(".segment");
+
+      values.forEach((value, index) => {
+        sliders[index].value = value;
+        sliders[index].style.setProperty("--value", value + "%");
+        rawValues[index].textContent = value;
+        shareValues[index].textContent = formatPercent(shares[index]);
+        segments[index].style.width = shares[index] + "%";
+        segments[index].title = `${languages[index].name}: ${formatPercent(shares[index])}`;
+      });
+    }
+
+    function escapeHtml(text) {
+      return text
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;");
+    }
+
+    const profiles = document.getElementById("profiles");
+    state.forEach((_, index) => profiles.appendChild(makeProfile(index)));
+  </script>
+</body>
+</html>
