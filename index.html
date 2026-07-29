@@ -443,7 +443,8 @@
       margin-top:16px;
     }
 
-    .reset{
+    .reset,
+    .export-button{
       padding:8px 0 4px;
       border:0;
       border-bottom:1px solid #aaa697;
@@ -455,9 +456,46 @@
       cursor:pointer;
     }
 
-    .reset:hover{
+    .reset:hover,
+    .export-button:hover{
       color:var(--sage-dark);
       border-bottom-color:var(--sage-dark);
+    }
+
+    .export-area{
+      display:flex;
+      flex-wrap:wrap;
+      align-items:center;
+      justify-content:center;
+      gap:10px 18px;
+      margin:26px 0 0;
+    }
+
+    .export-button{
+      padding:11px 18px;
+      border:1px solid var(--sage-dark);
+      border-radius:999px;
+      background:var(--sage-dark);
+      color:#fff;
+      font-size:12px;
+      letter-spacing:.02em;
+    }
+
+    .export-button:hover{
+      border-color:var(--moss);
+      background:var(--moss);
+      color:#fff;
+    }
+
+    .export-button:disabled{
+      cursor:wait;
+      opacity:.65;
+    }
+
+    .export-status{
+      min-height:1.4em;
+      color:var(--muted);
+      font-size:11px;
     }
 
     .explainer{
@@ -609,6 +647,11 @@
     <div class="tool-label">Persönliche Gewichtung</div>
     <section class="grid" id="profiles"></section>
 
+    <div class="export-area">
+      <button type="button" class="export-button" id="export-pdf">Auswertung als PDF exportieren</button>
+      <span class="export-status" id="export-status" role="status" aria-live="polite"></span>
+    </div>
+
     <p class="explainer">
       Beispiel: 50 / 50 / 50 / 50 / 50 ergibt fünfmal 20 %. Auch 90 / 90 / 90 / 90 / 90 ergibt fünfmal 20 %.
       Bei 50 / 0 / 0 / 0 / 0 erhält die erste Sprache 100 %. Die Berechnung lautet:
@@ -621,8 +664,8 @@
 
       <p class="lead">
         Die „Five Love Languages“ sind ein populäres Beziehungsmodell des US-amerikanischen Autors und
-        Eheberaters Gary Chapman. Es kann als Gesprächshilfe nützlich sein, sollte aber nicht mit einem
-        wissenschaftlich validierten Persönlichkeitstest oder einer diagnostischen Typologie verwechselt werden.
+        Eheberaters Gary Chapman. Es bietet eine leicht verständliche Sprache, um über Zuneigung,
+        Bedürfnisse und unterschiedliche Arten des Liebesausdrucks ins Gespräch zu kommen.
       </p>
 
       <h3>Woher kommt das Modell?</h3>
@@ -675,14 +718,12 @@
         <strong>Welche Formen von Zuwendung erscheinen mir im Verhältnis zueinander gerade besonders wichtig?</strong>
       </div>
 
-      <h3>Wie gut ist das wissenschaftlich belegt?</h3>
+      <h3>Was sagt die Forschung dazu?</h3>
       <p>
-        Die Forschungslage ist gemischt, insgesamt aber deutlich skeptischer als die Popularität des Modells
-        vermuten lässt. Eine Übersichtsarbeit von Emily Impett, Haeyoung Gideon Park und Amy Muise aus dem Jahr
-        2024 kommt zu dem Schluss, dass die vorhandenen Studien die drei zentralen Annahmen des Modells
-        <strong>nicht überzeugend stützen</strong>: dass jeder Mensch eine primäre Liebessprache hat, dass es
-        genau fünf relevante Kategorien gibt und dass Beziehungen speziell dann zufriedener sind, wenn die
-        Partner die jeweils primäre Sprache treffen.
+        Die Forschung greift die Grundidee zunehmend auf. Sie bestätigt vor allem einen hilfreichen Kern:
+        Beziehungen können davon profitieren, wenn Menschen die Vorlieben ihres Gegenübers kennen und
+        aufmerksam auf sie eingehen. Weniger eindeutig ist, ob jeder Mensch tatsächlich genau eine feste
+        „primäre“ Liebessprache besitzt oder ob sich Bedürfnisse je nach Situation und Lebensphase verändern.
       </p>
 
       <p>
@@ -694,29 +735,26 @@
       </p>
 
       <p>
-        Neuere, größere Untersuchungen relativieren aber gerade die starke Idee der „primären Sprache“.
-        Eine Studie mit 696 Personen, veröffentlicht 2025, fand keinen besonderen Vorteil dafür, ausgerechnet
-        die jeweils erstplatzierte Liebessprache zu bedienen. Eine weitere präregistrierte Studie mit 499
-        Personen kam zu dem Ergebnis, dass weniger als die Hälfte überhaupt klar einer einzelnen primären
-        Liebessprache zugeordnet werden konnte und dass Zufriedenheit über <strong>mehrere verschiedene Formen
-        liebevollen Verhaltens</strong> stärker mit Beziehungsqualität zusammenhing.
+        Neuere Untersuchungen laden zu einer flexiblen Anwendung ein. Sie legen nahe, dass viele Menschen
+        mehrere Formen liebevollen Verhaltens schätzen und sich nicht immer klar nur einer Kategorie zuordnen.
+        Das passt gut zu diesem Tool: Die fünf Sprachen werden hier als veränderbare Gewichtung dargestellt,
+        nicht als unverrückbarer Typ.
       </p>
 
-      <h3>Gibt es wirklich genau fünf?</h3>
+      <h3>Sind die fünf Kategorien vollständig?</h3>
       <p>
-        Dafür gibt es keine starke empirische Grundlage. Eine 2025 publizierte Untersuchung versuchte,
-        liebevolles Verhalten datengetrieben statt anhand der fünf vorgegebenen Kategorien zu strukturieren.
-        Modelle mit ungefähr <strong>sieben bis zehn Dimensionen</strong> passten in diesen Analysen besser als
-        die klassische Fünferstruktur. Das spricht dafür, dass Chapmans Kategorien eher eine eingängige
-        Vereinfachung als eine natürliche psychologische Taxonomie sind.
+        Die fünf Kategorien sind ein eingängiger Ausgangspunkt, aber kein Anspruch auf Vollständigkeit.
+        Manche Untersuchungen finden zusätzliche Dimensionen, etwa emotionale Unterstützung, Verlässlichkeit
+        oder Ermutigung bei persönlichen Zielen. Solche Aspekte können in den Notizfeldern ergänzt werden,
+        wenn sie für die eigene Beziehung wichtig sind.
       </p>
 
-      <h3>Was ist die wichtigste Kritik?</h3>
+      <h3>Wie lässt sich das Modell sinnvoll einordnen?</h3>
       <p>
-        Die zentrale Kritik betrifft die <strong>Typisierung</strong>. Bedürfnisse nach Nähe, Aufmerksamkeit,
-        Unterstützung oder Berührung sind wahrscheinlich kontextabhängiger und flexibler, als eine feste
-        Hauptsprache vermuten lässt. Was heute besonders wichtig ist, kann sich mit Lebensphase, Stress,
-        Elternschaft, Konflikten, Krankheit oder der konkreten Beziehung verändern.
+        Am hilfreichsten ist eine offene, flexible Nutzung. Bedürfnisse nach Nähe, Aufmerksamkeit,
+        Unterstützung oder Berührung können sich mit Lebensphase, Stress, Elternschaft, Konflikten oder
+        Krankheit verändern. Ein Ergebnis ist deshalb eine Einladung zum Gespräch und darf später anders
+        aussehen.
       </p>
 
       <p>
@@ -726,15 +764,14 @@
       </p>
 
       <p>
-        Ein weiterer Einwand ist, dass das Modell Probleme vereinfachen kann, die eigentlich mit Konfliktmustern,
-        Bindung, Sicherheit, Macht, Grenzen oder Kommunikation zu tun haben. „Du sprichst meine Liebessprache
-        nicht“ ist daher keine ausreichende Erklärung für größere Beziehungsprobleme.
+        Bei größeren Beziehungsproblemen lohnt es sich zusätzlich, Konfliktmuster, Bindung, Sicherheit,
+        Grenzen und Kommunikation anzuschauen. Die Liebessprachen können dabei ein guter Gesprächseinstieg
+        sein, ersetzen aber nicht alle anderen Perspektiven.
       </p>
 
-      <h3>Ist das Modell also nutzlos?</h3>
+      <h3>Wie kann das Modell helfen?</h3>
       <p>
-        Nein. Man muss zwischen einer <strong>wissenschaftlich bestätigten Theorie</strong> und einem
-        <strong>praktischen Gesprächsrahmen</strong> unterscheiden. Gerade als niedrigschwellige Frage
+        Vor allem als <strong>praktischer Gesprächsrahmen</strong>. Gerade als niedrigschwellige Frage
         „Wodurch fühlst du dich eigentlich besonders gesehen und geliebt?“ kann das Modell produktiv sein.
         Es schafft Begriffe für Bedürfnisse, über die Paare sonst möglicherweise nur unspezifisch sprechen.
       </p>
@@ -814,6 +851,7 @@
     </article>
   </main>
 
+  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.2/dist/jspdf.umd.min.js"></script>
   <script>
     const languages = [
       {
@@ -1043,8 +1081,163 @@
         .replaceAll('"',"&quot;");
     }
 
+    function exportPdf() {
+      const status = document.getElementById("export-status");
+      const button = document.getElementById("export-pdf");
+
+      if (!window.jspdf?.jsPDF) {
+        status.textContent = "Der PDF-Export konnte nicht geladen werden. Bitte prüfe deine Internetverbindung.";
+        return;
+      }
+
+      button.disabled = true;
+      status.textContent = "PDF wird erstellt …";
+
+      try {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF({ orientation:"portrait", unit:"mm", format:"a4" });
+        const pageWidth = doc.internal.pageSize.getWidth();
+        const pageHeight = doc.internal.pageSize.getHeight();
+        const accents = [
+          [113,131,111],
+          [198,170,119],
+          [120,152,166],
+          [154,148,109],
+          [183,130,105]
+        ];
+        let pageStarted = false;
+
+        const addHeader = (profileName, continuation = false) => {
+          if (pageStarted) doc.addPage();
+          pageStarted = true;
+          doc.setTextColor(52,55,47);
+          doc.setFont("helvetica","normal");
+          doc.setFontSize(9);
+          doc.text("SPRACHEN DER LIEBE  |  PERSÖNLICHE AUSWERTUNG",20,16);
+          doc.setDrawColor(217,212,199);
+          doc.line(20,20,pageWidth - 20,20);
+          doc.setFont("helvetica","bold");
+          doc.setFontSize(20);
+          doc.text(profileName || "Ohne Namen",20,31);
+          if (continuation) {
+            doc.setFont("helvetica","normal");
+            doc.setFontSize(9);
+            doc.setTextColor(133,137,126);
+            doc.text("Fortsetzung",pageWidth - 20,31,{align:"right"});
+          }
+          return 42;
+        };
+
+        state.forEach((profile, profileIndex) => {
+          let y = addHeader(profile.name);
+          const shares = sharesFrom(profile.values);
+
+          doc.setFont("helvetica","normal");
+          doc.setFontSize(9);
+          doc.setTextColor(95,101,90);
+          doc.text(
+            `Erstellt am ${new Date().toLocaleDateString("de-DE")}  |  Reglerstärke und relative Gewichtung`,
+            20,y
+          );
+          y += 10;
+
+          profile.values.forEach((value,index) => {
+            const note = profile.notes[index]?.trim();
+            const noteLines = note ? doc.splitTextToSize(note,pageWidth - 48) : [];
+            const requiredHeight = 18 + (noteLines.length ? noteLines.length * 4.3 + 6 : 0);
+
+            if (y + requiredHeight > pageHeight - 20) {
+              y = addHeader(profile.name,true);
+            }
+
+            doc.setFont("helvetica","bold");
+            doc.setFontSize(10);
+            doc.setTextColor(52,55,47);
+            doc.text(languages[index].name,20,y);
+            doc.setFont("helvetica","normal");
+            doc.setTextColor(95,101,90);
+            doc.text(
+              `Stärke ${value}  |  Anteil ${formatPercent(shares[index])}`,
+              pageWidth - 20,y,{align:"right"}
+            );
+
+            y += 4;
+            doc.setFillColor(222,217,205);
+            doc.roundedRect(20,y,pageWidth - 40,4,2,2,"F");
+            doc.setFillColor(...accents[index]);
+            if (value > 0) {
+              doc.roundedRect(20,y,(pageWidth - 40) * value / 100,4,2,2,"F");
+            }
+            y += 8;
+
+            if (noteLines.length) {
+              doc.setFont("helvetica","italic");
+              doc.setFontSize(8.5);
+              doc.setTextColor(95,101,90);
+              doc.text(noteLines,24,y);
+              y += noteLines.length * 4.3 + 3;
+            }
+
+            y += 5;
+          });
+
+          if (y + 22 > pageHeight - 20) {
+            y = addHeader(profile.name,true);
+          }
+
+          doc.setFont("helvetica","bold");
+          doc.setFontSize(10);
+          doc.setTextColor(52,55,47);
+          doc.text("Relative Verteilung",20,y);
+          doc.setFont("helvetica","normal");
+          doc.setFontSize(9);
+          doc.setTextColor(95,101,90);
+          doc.text("Summe: 100 %",pageWidth - 20,y,{align:"right"});
+          y += 5;
+
+          let segmentX = 20;
+          shares.forEach((share,index) => {
+            const width = (pageWidth - 40) * share / 100;
+            doc.setFillColor(...accents[index]);
+            doc.rect(segmentX,y,width,7,"F");
+            segmentX += width;
+          });
+
+          y += 13;
+          doc.setFontSize(8);
+          shares.forEach((share,index) => {
+            doc.setTextColor(...accents[index]);
+            const label = `${languages[index].name}: ${formatPercent(share)}`;
+            doc.text(label,20,y);
+            y += 4.2;
+          });
+        });
+
+        const totalPages = doc.getNumberOfPages();
+        for (let page = 1; page <= totalPages; page++) {
+          doc.setPage(page);
+          doc.setFont("helvetica","normal");
+          doc.setFontSize(8);
+          doc.setTextColor(133,137,126);
+          doc.text(
+            `Seite ${page} von ${totalPages}  |  grzlprmpf.github.io/SdL`,
+            pageWidth / 2,pageHeight - 9,{align:"center"}
+          );
+        }
+
+        doc.save("sprachen-der-liebe-auswertung.pdf");
+        status.textContent = "PDF wurde erstellt.";
+      } catch (error) {
+        console.error(error);
+        status.textContent = "Beim Erstellen der PDF ist ein Fehler aufgetreten.";
+      } finally {
+        button.disabled = false;
+      }
+    }
+
     const profiles = document.getElementById("profiles");
     state.forEach((_, index) => profiles.appendChild(makeProfile(index)));
+    document.getElementById("export-pdf").addEventListener("click", exportPdf);
   </script>
 </body>
 </html>
